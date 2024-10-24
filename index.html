@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Counter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .section {
+            height: 500px;
+            width: 100%;
+            background-color: rgb(236, 236, 236);
+        }
+        
+        #section2 p {
+            text-align: center;
+            font-size: 30px;
+            color: white;
+        }
+        
+        .sec2 {
+            background-color: rgb(41, 41, 41);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section" id="section1"></div>
+    <div class="section sec2" id="section2">
+        <p data-count="100">0</p>
+    </div>
+    <div class="section" id="section3"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const pElement = document.querySelector("p");
+            let isCounting = false;
+            let counterInterval;
+
+            function updateCount() {
+                const section2Top = document.getElementById("section2").offsetTop;
+                const windowHeight = window.innerHeight;
+                const scrollY = window.scrollY;
+
+                if (scrollY >= section2Top && !isCounting) {
+                    const targetCount = parseInt(pElement.getAttribute("data-count"));
+                    countUp(targetCount);
+                    isCounting = true;
+                } else if (scrollY < section2Top && isCounting) {
+                    resetCount();
+                    isCounting = false;
+                }
+            }
+
+            function countUp(targetCount) {
+                let count = 0;
+                const duration = 2000; // 2 seconds
+                const interval = 10; // interval for smoother animation
+
+                const increment = targetCount / (duration / interval);
+
+                counterInterval = setInterval(function() {
+                    count += increment;
+                    pElement.textContent = Math.round(count);
+
+                    if (count >= targetCount) {
+                        clearInterval(counterInterval);
+                    }
+                }, interval);
+            }
+
+            function resetCount() {
+                clearInterval(counterInterval);
+                pElement.textContent = "0";
+            }
+
+            window.addEventListener("scroll", updateCount);
+        });
+    </script>
+</body>
+
+</html>
